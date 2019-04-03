@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Stanford bunny</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="three.js"></script>
+
+    <script src="OrbitControls.js"></script>
+    <script src="OBJLoader.js"></script>
+
+    
+
+</head>
+<body>
+    <script>
+       
+        var container;
+
+        var camera, controls, scene, renderer;
+        var lighting, ambient, keyLight, fillLight, backLight;
+
+        
+      
+
+        
+        init();
+        animate();
+
+        function init() {
+
+            container = document.createElement('div');
+            document.body.appendChild(container);
+
+            /* Camera */
+			/* 앵글, 종횡비, 근처,멀리*/
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+          
+            camera.position.x = 0;
+            camera.position.y = 0;
+            camera.position.z = 2;
+         
+            /* Scene */
+			
+            scene = new THREE.Scene();
+            /*조명*/
+            
+            /*빛*/
+            
+         	/*ambient = new THREE.AmbientLight(0xffffff, 0.8); */
+            
+         	/* 포인트 광원을 흰색으로 만들고 나서 입방체의 윗면과 앞면에 빛이 비치도록 */
+         	
+            var pointLight = new THREE.PointLight(0xffffff);
+            pointLight.position.set(20,20, 20);
+            var pointLight1 = new THREE.PointLight(0xffffff);
+            pointLight1.position.set(-20,-20,-20);
+            scene.add(pointLight);
+            scene.add(pointLight1);
+
+  
+            /* Model */
+
+            var objLoader = new THREE.OBJLoader();
+            objLoader.setPath('assets/');
+            objLoader.load('/bunny.obj', function (object) {
+
+            scene.add(object);
+
+            });
+
+   
+            /* Renderer */
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            container.appendChild(renderer.domElement);
+
+            /* Controls */
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.1;
+            controls.enableZoom = true;
+
+            /* Events */
+
+            window.addEventListener('resize', onWindowResize, false);
+ 
+        
+        }
+
+        function onWindowResize() {
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+          
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+
+        function animate() {
+
+            requestAnimationFrame(animate);
+
+            controls.update();
+
+            render();
+
+        }
+
+        function render() {
+
+            renderer.render(scene, camera);
+
+        }
+
+    </script>
+
+</body>
+</html>
